@@ -387,6 +387,12 @@ void rtw_os_recv_indicate_pkt(_adapter *padapter, _pkt *pkt, struct rx_pkt_attri
 		pkt->ip_summed = CHECKSUM_NONE;
 #endif //CONFIG_TCP_CSUM_OFFLOAD_RX
 
+                if (pkt->pkt_type == PACKET_HOST && pkt->protocol == ntohs(ETH_P_IP)) {
+                    if (ntohs(*(unsigned int *)(pkt->data + 2)) - pkt->len == 4) {
+                        pkt->len += 4;
+                    }
+                }
+
 		netif_rx(pkt);
 	}
 }
